@@ -1,0 +1,12 @@
+{
+    "name": "ovr/github-cache",
+    "authors": [
+        {
+            "name": "Dmitry Patsura",
+            "email": "talk@dmtry.me"
+        }
+    ],
+    "require": {
+        "doctrine/mongodb-odm": "dev-master"
+    }
+}
