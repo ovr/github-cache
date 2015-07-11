@@ -69,6 +69,28 @@ class User
     protected $public_repos;
 
     /**
+     * @ODM\Integer()
+     * @var integer
+     */
+    protected $followers;
+
+    /**
+     * @ODM\Integer()
+     * @var integer
+     */
+    protected $following;
+
+    /**
+     * @ODM\Date()
+     */
+    protected $created_at;
+
+    /**
+     * @ODM\Date()
+     */
+    protected $updated_at;
+
+    /**
      * @return mixed
      */
     public function getSiteAdmin()
@@ -242,5 +264,69 @@ class User
     public function setName($name)
     {
         $this->name = $name;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updated_at;
+    }
+
+    /**
+     * @param mixed $updated_at
+     */
+    public function setUpdatedAt($updated_at)
+    {
+        $this->updated_at = $updated_at;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCreatedAt()
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * @param mixed $created_at
+     */
+    public function setCreatedAt($created_at)
+    {
+        $this->created_at = $created_at;
+    }
+
+    /**
+     * @return int
+     */
+    public function getFollowing()
+    {
+        return $this->following;
+    }
+
+    /**
+     * @param int $following
+     */
+    public function setFollowing($following)
+    {
+        $this->following = $following;
+    }
+
+    /**
+     * @return int
+     */
+    public function getFollowers()
+    {
+        return $this->followers;
+    }
+
+    /**
+     * @param int $followers
+     */
+    public function setFollowers($followers)
+    {
+        $this->followers = $followers;
     }
 }

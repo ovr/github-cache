@@ -114,6 +114,38 @@ class AppModelUserHydrator implements HydratorInterface
             $this->class->reflFields['public_repos']->setValue($document, $return);
             $hydratedData['public_repos'] = $return;
         }
+
+        /** @Field(type="integer") */
+        if (isset($data['followers'])) {
+            $value = $data['followers'];
+            $return = (int) $value;
+            $this->class->reflFields['followers']->setValue($document, $return);
+            $hydratedData['followers'] = $return;
+        }
+
+        /** @Field(type="integer") */
+        if (isset($data['following'])) {
+            $value = $data['following'];
+            $return = (int) $value;
+            $this->class->reflFields['following']->setValue($document, $return);
+            $hydratedData['following'] = $return;
+        }
+
+        /** @Field(type="date") */
+        if (isset($data['created_at'])) {
+            $value = $data['created_at'];
+            if ($value === null) { $return = null; } else { $return = \Doctrine\ODM\MongoDB\Types\DateType::getDateTime($value); }
+            $this->class->reflFields['created_at']->setValue($document, clone $return);
+            $hydratedData['created_at'] = $return;
+        }
+
+        /** @Field(type="date") */
+        if (isset($data['updated_at'])) {
+            $value = $data['updated_at'];
+            if ($value === null) { $return = null; } else { $return = \Doctrine\ODM\MongoDB\Types\DateType::getDateTime($value); }
+            $this->class->reflFields['updated_at']->setValue($document, clone $return);
+            $hydratedData['updated_at'] = $return;
+        }
         return $hydratedData;
     }
 }

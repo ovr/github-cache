@@ -39,30 +39,39 @@ if ($res) {
 
 $client = new \Github\Client();
 
-for ($i = 0; $i < count($usersConfig); $i++) {
+for ($i = 15; $i < count($usersConfig); $i++) {
     $userConfig = $usersConfig[$i];
 
     try {
+        $client->authenticate('', null, \Github\Client::AUTH_HTTP_TOKEN);
         $client->authenticate($userConfig->token, null, \Github\Client::AUTH_HTTP_TOKEN);
+        var_dump(json_decode($client->getHttpClient()->get('rate_limit')->getBody(true)));
+        die();
 
         while ($result = $client->users()->all($latestId)) {
             foreach ($result as $entity) {
                 $info = $client->users()->show($entity['login']);
 
                 $user = new User();
-                $user->setSiteAdmin($entity['site_admin']);
+//                $user->setSiteAdmin($entity['site_admin']);
                 $user->setLogin($entity['login']);
                 $user->setId($entity['id']);
 
-                if ($info) {
-                    $user->setBio($info['bio']);
-                    $user->setEmail($info['email']);
-                    $user->setBlog($info['blog']);
-                    $user->setHireable($info['hireable']);
-                    $user->setPublicRepos($info['public_repos']);
-                    $user->setBlog($info['location']);
-                    $user->setCompany($info['company']);
-                }
+//                if ($info) {
+//                    $user->setBio($info['bio']);
+//                    $user->setEmail($info['email']);
+//                    $user->setBlog($info['blog']);
+//                    $user->setHireable($info['hireable']);
+//                    $user->setPublicRepos($info['public_repos']);
+//                    $user->setBlog($info['location']);
+//                    $user->setCompany($info['company']);
+//
+//                    $user->setFollowers($info['followers']);
+//                    $user->setFollowing($info['following']);
+//
+//                    $user->setCreatedAt($info['created_at']);
+//                    $user->setUpdatedAt($info['updated_at']);
+//                }
 
                 $dm->persist($user);
                 $dm->flush();
