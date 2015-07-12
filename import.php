@@ -39,39 +39,44 @@ if ($res) {
 
 $client = new \Github\Client();
 
-for ($i = 15; $i < count($usersConfig); $i++) {
+for ($i = 0; $i < count($usersConfig); $i++) {
     $userConfig = $usersConfig[$i];
 
     try {
-        $client->authenticate('', null, \Github\Client::AUTH_HTTP_TOKEN);
-        $client->authenticate($userConfig->token, null, \Github\Client::AUTH_HTTP_TOKEN);
+        $client->authenticate('1951772aae988679dfb40baec619d9fee7977f09', null, \Github\Client::AUTH_HTTP_TOKEN);
         var_dump(json_decode($client->getHttpClient()->get('rate_limit')->getBody(true)));
-        die();
+//        var_dump($client->getHttpClient()->get('users')->getHeaders());
+//        die();
 
         while ($result = $client->users()->all($latestId)) {
             foreach ($result as $entity) {
-                $info = $client->users()->show($entity['login']);
+                $info = false;
+                try {
+                    $info = $client->users()->show($entity['login']);
+                } catch (\Exception $e) {
+                    var_dump($e->getMessage());
+                }
 
                 $user = new User();
-//                $user->setSiteAdmin($entity['site_admin']);
+                $user->setSiteAdmin($entity['site_admin']);
                 $user->setLogin($entity['login']);
                 $user->setId($entity['id']);
 
-//                if ($info) {
-//                    $user->setBio($info['bio']);
-//                    $user->setEmail($info['email']);
-//                    $user->setBlog($info['blog']);
-//                    $user->setHireable($info['hireable']);
-//                    $user->setPublicRepos($info['public_repos']);
-//                    $user->setBlog($info['location']);
-//                    $user->setCompany($info['company']);
-//
-//                    $user->setFollowers($info['followers']);
-//                    $user->setFollowing($info['following']);
-//
-//                    $user->setCreatedAt($info['created_at']);
-//                    $user->setUpdatedAt($info['updated_at']);
-//                }
+                if ($info) {
+                    $user->setBio($info['bio']);
+                    $user->setEmail($info['email']);
+                    $user->setBlog($info['blog']);
+                    $user->setHireable($info['hireable']);
+                    $user->setPublicRepos($info['public_repos']);
+                    $user->setBlog($info['location']);
+                    $user->setCompany($info['company']);
+
+                    $user->setFollowers($info['followers']);
+                    $user->setFollowing($info['following']);
+
+                    $user->setCreatedAt($info['created_at']);
+                    $user->setUpdatedAt($info['updated_at']);
+                }
 
                 $dm->persist($user);
                 $dm->flush();
@@ -87,4 +92,5 @@ for ($i = 15; $i < count($usersConfig); $i++) {
     } catch (\Exception $e) {
         var_dump($i . ' == ' . $e->getMessage());
     }
+    die();
 }
