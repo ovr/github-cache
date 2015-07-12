@@ -46,7 +46,7 @@ for ($i = 0; $i < count($usersConfig); $i++) {
         $client->authenticate('1951772aae988679dfb40baec619d9fee7977f09', null, \Github\Client::AUTH_HTTP_TOKEN);
         var_dump(json_decode($client->getHttpClient()->get('rate_limit')->getBody(true)));
 //        var_dump($client->getHttpClient()->get('users')->getHeaders());
-//        die();
+        die();
 
         while ($result = $client->users()->all($latestId)) {
             foreach ($result as $entity) {
@@ -63,13 +63,14 @@ for ($i = 0; $i < count($usersConfig); $i++) {
                 $user->setId($entity['id']);
 
                 if ($info) {
+                    $user->setName($info['name']);
                     $user->setBio($info['bio']);
                     $user->setEmail($info['email']);
                     $user->setBlog($info['blog']);
                     $user->setHireable($info['hireable']);
                     $user->setPublicRepos($info['public_repos']);
-                    $user->setBlog($info['location']);
                     $user->setCompany($info['company']);
+                    $user->setLocation($info['location']);
 
                     $user->setFollowers($info['followers']);
                     $user->setFollowing($info['following']);
