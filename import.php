@@ -39,59 +39,102 @@ if ($res) {
 
 $client = new \Github\Client();
 
-for ($i = 0; $i < count($usersConfig); $i++) {
-    $userConfig = $usersConfig[$i];
+while (true) {
+    for ($i = 0; $i < count($usersConfig); $i++) {
+        $userConfig = $usersConfig[$i];
 
-    try {
-        $client->authenticate('1951772aae988679dfb40baec619d9fee7977f09', null, \Github\Client::AUTH_HTTP_TOKEN);
-        var_dump(json_decode($client->getHttpClient()->get('rate_limit')->getBody(true)));
-//        var_dump($client->getHttpClient()->get('users')->getHeaders());
-        die();
+        try {
+            $client->authenticate($userConfig->token, null, \Github\Client::AUTH_HTTP_TOKEN);
+            $rate = json_decode($client->getHttpClient()->get('rate_limit')->getBody(true))->rate;
+            var_dump($rate);
 
-        while ($result = $client->users()->all($latestId)) {
-            foreach ($result as $entity) {
-                $info = false;
-                try {
-                    $info = $client->users()->show($entity['login']);
-                } catch (\Exception $e) {
-                    var_dump($e->getMessage());
+            if ($rate->remaining == 0) {
+                continue;
+            }
+            
+            $service = $client->users();
+            $service->setPerPage(100);
+
+            while ($result = $service->all($latestId)) {
+                foreach ($result as $entity) {
+                    $info = false;
+
+                    try {
+                        $info = $client->users()->show($entity['login']);
+                    } catch (\Exception $e) {
+                        if ($e->getPrevious()) {
+                            if ($e->getPrevious() instanceof \Github\Exception\ApiLimitExceedException) {
+                                continue;
+                            }
+                        }
+                        var_dump($e);
+                    }
+
+                    $user = new User();
+                    $user->setSiteAdmin($entity['site_admin']);
+                    $user->setLogin($entity['login']);
+                    $user->setId($entity['id']);
+
+                    if ($info) {
+                        if (!empty($info['email'])) {
+                            $user->setEmail($info['email']);
+                        }
+
+                        if (!empty($info['name'])) {
+                            $user->setName($info['name']);
+                        }
+
+                        if (!empty($info['bio'])) {
+                            $user->setBio($info['bio']);
+                        }
+
+                        if (!empty($info['blog'])) {
+                            $user->setBlog($info['blog']);
+                        }
+
+                        if (!empty($info['company'])) {
+                            $user->setCompany($info['company']);
+                        }
+
+                        if (!empty($info['location'])) {
+                            $user->setLocation($info['location']);
+                        }
+
+                        if (isset($info['hireable'])) {
+                            $user->setHireable($info['hireable']);
+                        }
+
+                        $user->setPublicRepos($info['public_repos']);
+
+                        $user->setFollowers($info['followers']);
+                        $user->setFollowing($info['following']);
+
+                        $user->setCreatedAt($info['created_at']);
+                        $user->setUpdatedAt($info['updated_at']);
+                    }
+
+                    $dm->persist($user);
+
+                    $latestId = $entity['id'];
+                    var_dump($latestId);
                 }
 
-                $user = new User();
-                $user->setSiteAdmin($entity['site_admin']);
-                $user->setLogin($entity['login']);
-                $user->setId($entity['id']);
-
-                if ($info) {
-                    $user->setName($info['name']);
-                    $user->setBio($info['bio']);
-                    $user->setEmail($info['email']);
-                    $user->setBlog($info['blog']);
-                    $user->setHireable($info['hireable']);
-                    $user->setPublicRepos($info['public_repos']);
-                    $user->setCompany($info['company']);
-                    $user->setLocation($info['location']);
-
-                    $user->setFollowers($info['followers']);
-                    $user->setFollowing($info['following']);
-
-                    $user->setCreatedAt($info['created_at']);
-                    $user->setUpdatedAt($info['updated_at']);
-                }
-
-                $dm->persist($user);
                 $dm->flush();
                 $dm->clear();
-
-                $latestId = $entity['id'];
-                var_dump($latestId);
             }
-        }
 
-    } catch (\Github\Exception\ApiLimitExceedException $e) {
-        var_dump($i . ' == ' . $e->getMessage());
-    } catch (\Exception $e) {
-        var_dump($i . ' == ' . $e->getMessage());
+        } catch (\Exception $e) {
+            if ($e->getPrevious()) {
+                if ($e->getPrevious() instanceof \Github\Exception\ApiLimitExceedException) {
+                    continue;
+                }
+            }
+            var_dump($i . ' == ' . $e->getMessage());
+        } finally {
+            $dm->flush();
+            $dm->clear();
+        }
     }
-    die();
+
+    sleep(60*10);
 }

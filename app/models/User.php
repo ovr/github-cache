@@ -5,7 +5,10 @@ namespace App\Model;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 
 /**
- * @ODM\Document()
+ * @ODM\Document(
+ *      db="github",
+ *      collection="users"
+ * )
  */
 class User
 {
@@ -14,7 +17,10 @@ class User
      */
     protected $id;
 
-    /** @ODM\String(nullable=false) */
+    /**
+     * @ODM\String(nullable=false)
+     * @ODM\UniqueIndex
+     */
     protected $login;
 
     /** @ODM\Boolean(value="false") */
@@ -60,7 +66,7 @@ class User
      * @ODM\Boolean()
      * @var boolean
      */
-    protected $hireable;
+    protected $hireable = false;
 
     /**
      * @ODM\Integer()
