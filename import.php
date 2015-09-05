@@ -1,6 +1,6 @@
 <?php
 
-include_once __DIR__ . 'common.php';
+include_once __DIR__ . '/common.php';
 
 use App\Model\User;
 

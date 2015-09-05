@@ -2,7 +2,7 @@
 
 use App\Model\User;
 
-include_once __DIR__ . 'common.php';
+include_once __DIR__ . '/common.php';
 
 /** @var  $res */
 $res = $dm->getRepository(User::class)->createQueryBuilder()
