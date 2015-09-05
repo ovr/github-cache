@@ -5,7 +5,7 @@ include_once __DIR__ . 'common.php';
 use App\Model\User;
 
 /** @var  $res */
-$res = $dm->getRepository('App\Model\User')->createQueryBuilder()
+$res = $dm->getRepository(User::class)->createQueryBuilder()
     ->select('_id')
     ->sort('_id', -1)
     ->limit(1)

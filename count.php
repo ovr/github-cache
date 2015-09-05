@@ -1,9 +1,11 @@
 <?php
 
+use App\Model\User;
+
 include_once __DIR__ . 'common.php';
 
 /** @var  $res */
-$res = $dm->getRepository('App\Model\User')->createQueryBuilder()
+$res = $dm->getRepository(User::class)->createQueryBuilder()
     ->select('_id')
     ->sort('_id', -1)
     ->limit(1)
@@ -20,7 +22,7 @@ var_dump($latestId);
 /**
  * @var $res \Doctrine\MongoDB\ArrayIterator
  */
-$res = $dm->getRepository('App\Model\User')->createQueryBuilder()
+$res = $dm->getRepository(User::class)->createQueryBuilder()
     ->group(
         array(
             'company' => 1
