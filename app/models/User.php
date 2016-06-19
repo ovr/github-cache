@@ -18,70 +18,70 @@ class User
     protected $id;
 
     /**
-     * @ODM\String(nullable=false)
+     * @ODM\Field(nullable=false)
      * @ODM\UniqueIndex
      */
     protected $login;
 
-    /** @ODM\Boolean(value="false") */
+    /** @ODM\Field(type="boolean", value="false") */
     protected $site_admin;
 
     /**
-     * @ODM\String()
+     * @ODM\Field()
      * @var string
      */
     protected $name;
 
     /**
-     * @ODM\String()
+     * @ODM\Field()
      * @var string
      */
     protected $company;
 
     /**
-     * @ODM\String()
+     * @ODM\Field()
      * @var string
      */
     protected $blog;
 
     /**
-     * @ODM\String()
+     * @ODM\Field()
      * @var string
      */
     protected $location;
 
     /**
-     * @ODM\String()
+     * @ODM\Field()
      * @var string
      */
     protected $email;
 
     /**
-     * @ODM\String()
+     * @ODM\Field()
      * @var string
      */
     protected $bio;
 
     /**
-     * @ODM\Boolean()
+     * @ODM\Field(type="boolean")
      * @var boolean
      */
     protected $hireable = false;
 
     /**
-     * @ODM\Integer()
+     * @ODM\Field(type="integer")
      * @var integer
      */
     protected $public_repos;
 
     /**
-     * @ODM\Integer()
+     * @ODM\Field(type="integer")
      * @var integer
      */
     protected $followers;
 
     /**
-     * @ODM\Integer()
+     * @ODM\Field(type="integer")
      * @var integer
      */
     protected $following;
